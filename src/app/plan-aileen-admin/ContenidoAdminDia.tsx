@@ -16,6 +16,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function ContenidoAdminDia({ day }: { day: string }) {
   const [titulo, setTitulo] = useState("");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [respuestas, setRespuestas] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,7 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
       if (snap.exists()) {
         const data = snap.data();
         setTitulo(data.titulo || "");
+        setPdfUrl(data.url || null);  // <-- AGREGADO
       }
 
       // Cargar respuestas del día
@@ -64,6 +66,7 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
       await uploadBytes(storageRef, file);
 
       const url = await getDownloadURL(storageRef);
+      setPdfUrl(url); // <-- AGREGADO
 
       await setDoc(
         doc(db, "planAileen_pdfs", `dia-${day}`),
@@ -131,7 +134,8 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
 
   return (
     <main className="min-h-screen text-white px-4 py-6">
-      {/* HEADER */}
+
+      {/* BOTONES */}
       <div className="flex gap-4 mb-6">
         <button
           onClick={() => (window.location.href = "/dashboard")}
@@ -185,15 +189,42 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
         </button>
       </div>
 
-      {/* RESPUESTAS DEL DÍA */}
+      {/* 📌 MOSTRAR EL PDF ACTUAL */}
+      {pdfUrl && (
+        <div className="bg-neutral-900 p-4 rounded-xl border border-neutral-700 mb-10">
+          <h2 className="font-semibold mb-3">PDF Actual</h2>
+
+          <p className="mb-3 text-neutral-300">
+            <strong>Título:</strong> {titulo}
+          </p>
+
+          <a
+            href={pdfUrl}
+            target="_blank"
+            className="px-4 py-2 bg-green-600 rounded-lg mr-3"
+          >
+            Ver PDF
+          </a>
+
+          <a
+            href={pdfUrl}
+            download
+            className="px-4 py-2 bg-blue-600 rounded-lg"
+          >
+            Descargar PDF
+          </a>
+        </div>
+      )}
+
+      {/* RESPUESTAS */}
       <h2 className="text-xl font-bold mb-4">Respuestas del día</h2>
 
       {respuestas.length === 0 ? (
         <p className="text-neutral-400">Aún no hay respuestas.</p>
       ) : (
-        respuestas.map((r, i) => (
+        respuestas.map((r) => (
           <div
-            key={i}
+            key={r.id}
             className="p-4 bg-neutral-900 border border-neutral-700 rounded-xl mb-6"
           >
             <p className="font-semibold mb-2">Usuario: {r.userId}</p>
@@ -204,7 +235,6 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
               </p>
             ))}
 
-            {/* BOTÓN ELIMINAR */}
             <button
               onClick={() => eliminarRespuesta(r.id)}
               className="mt-4 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white"
@@ -212,7 +242,6 @@ export default function ContenidoAdminDia({ day }: { day: string }) {
               Eliminar respuesta
             </button>
 
-            {/* SELECCIONAR PARA CALIFICAR */}
             <button
               onClick={() => setUserIdSeleccionado(r.userId)}
               className="ml-3 px-3 py-2 bg-green-700 hover:bg-green-600 rounded-lg"
