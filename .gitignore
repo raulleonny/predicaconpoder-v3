@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+
+# production
+/out
+/build
+
+# next.js
+/.next
+
+# env files
+.env*
+*.env
+
+# vercel
+.vercel
+
+# firebase cache
+.fir*
+.firebase/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
