@@ -5,17 +5,25 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
-import {
-  Viewer,
-  Worker,
-  SpecialZoomLevel,
-} from "@react-pdf-viewer/core";
+// === Dynamic imports necesarios para evitar errores de SSR ===
+import dynamic from "next/dynamic";
 
+const Viewer = dynamic(
+  () => import("@react-pdf-viewer/core").then((m) => m.Viewer),
+  { ssr: false }
+);
+
+const Worker = dynamic(
+  () => import("@react-pdf-viewer/core").then((m) => m.Worker),
+  { ssr: false }
+);
+
+// === ESTOS SÍ SE IMPORTAN NORMAL ===
+import { SpecialZoomLevel } from "@react-pdf-viewer/core";
 import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
-// ❌ IMPORTS ELIMINADOS (NO FUNCIONAN EN CLIENT COMPONENT)
-// import "@react-pdf-viewer/core/lib/styles/index.css";
-// import "@react-pdf-viewer/default-layout/lib/styles/index.css";
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 type Theme = "oscuro" | "sepia" | "claro";
 
@@ -36,6 +44,7 @@ export default function LecturaReader({ bookId }: { bookId: string }) {
   const [note, setNote] = useState("");
   const [currentColor, setCurrentColor] = useState(highlightColors[0].key);
 
+  // === Plugin principal del visor PDF ===
   const layoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
@@ -96,6 +105,7 @@ export default function LecturaReader({ bookId }: { bookId: string }) {
 
   return (
     <main className="min-h-screen bg-black text-white p-4 flex flex-col gap-4">
+
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <Link href="/lecturas" className="bg-neutral-700 px-3 py-2 rounded-lg hover:bg-neutral-600">
@@ -116,6 +126,7 @@ export default function LecturaReader({ bookId }: { bookId: string }) {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4">
+
         {/* VISOR PDF */}
         <div
           className="flex-1 bg-neutral-900 rounded-xl"
@@ -156,6 +167,7 @@ export default function LecturaReader({ bookId }: { bookId: string }) {
             Guardar progreso
           </button>
         </div>
+
       </div>
     </main>
   );
