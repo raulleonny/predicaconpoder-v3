@@ -54,7 +54,7 @@ const sections: Section[] = [
     title: "Plan Aileen",
     desc: "El plan de 30 días para tu hija",
     icon: "🌸",
-    href: "/aileen/page",
+    href: "/plan-aileen-admin",
     gradient: "from-pink-500 to-rose-600",
   },
 ];
