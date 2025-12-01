@@ -1,24 +1,28 @@
 # dependencies
-/node_modules
-
-# production
-/out
-/build
+node_modules/
 
 # next.js
-/.next
+.next/
+out/
 
-# env files
+# production
+build/
+
+# environment
 .env*
-*.env
+.env.local
 
 # vercel
-.vercel
+.vercel/
 
-# firebase cache
-.fir*
+# firebase local cache
 .firebase/
+*.fir
+functions/node_modules/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# misc
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
