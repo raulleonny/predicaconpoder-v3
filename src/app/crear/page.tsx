@@ -5,6 +5,11 @@ import { db, auth } from "@/lib/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 
+type Subtema = {
+  titulo: string;
+  contenido: string;
+};
+
 export default function CrearSermonPage() {
   const router = useRouter();
 
@@ -13,25 +18,29 @@ export default function CrearSermonPage() {
   const [objetivo, setObjetivo] = useState("");
   const [contenido, setContenido] = useState("");
 
-  const [subtemaInput, setSubtemaInput] = useState("");
-  const [subtemas, setSubtemas] = useState<string[]>([]);
+  const [subtemas, setSubtemas] = useState<Subtema[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // ===============================================
-  // 🔥 AGREGAR SUBTEMA
+  // 🔥 AGREGAR SUBTEMA CON TÍTULO + TEXTO
   // ===============================================
   const addSubtema = () => {
-    if (subtemaInput.trim().length === 0) return;
-
-    setSubtemas([...subtemas, subtemaInput.trim()]);
-    setSubtemaInput("");
+    setSubtemas([
+      ...subtemas,
+      { titulo: "", contenido: "" } 
+    ]);
   };
 
-  // ===============================================
-  // ❌ ELIMINAR SUBTEMA
-  // ===============================================
+  // actualizar campos de cada subtema
+  const updateSubtema = (index: number, field: "titulo" | "contenido", value: string) => {
+    const updated = [...subtemas];
+    updated[index][field] = value;
+    setSubtemas(updated);
+  };
+
+  // eliminar subtema
   const deleteSubtema = (index: number) => {
     setSubtemas(subtemas.filter((_, i) => i !== index));
   };
@@ -61,12 +70,12 @@ export default function CrearSermonPage() {
         pasaje,
         objetivo,
         contenido,
-        subtemas,
+        subtemas, // ahora guarda títulos y contenido completos
         creadoEn: Timestamp.now(),
       });
 
       router.push("/dashboard");
-    } catch (e: any) {
+    } catch {
       setError("Error al guardar el sermón");
     } finally {
       setLoading(false);
@@ -128,36 +137,48 @@ export default function CrearSermonPage() {
         <div>
           <label className="text-sm">Subtemas</label>
 
-          <div className="flex gap-2 mt-2">
-            <input
-              type="text"
-              placeholder="Escribe un subtema"
-              className="flex-1 px-3 py-2 bg-neutral-800 rounded-lg"
-              value={subtemaInput}
-              onChange={(e) => setSubtemaInput(e.target.value)}
-            />
-            <button
-              onClick={addSubtema}
-              className="px-3 py-2 bg-green-600 rounded-lg hover:bg-green-500"
-            >
-              Agregar
-            </button>
-          </div>
+          <button
+            onClick={addSubtema}
+            className="mt-2 px-4 py-2 bg-green-600 rounded-lg hover:bg-green-500"
+          >
+            ➕ Agregar subtema
+          </button>
 
-          {/* LISTA DE SUBTEMAS */}
-          <div className="mt-4 space-y-2">
-            {subtemas.map((s, i) => (
+          <div className="mt-4 space-y-6">
+            {subtemas.map((sub, i) => (
               <div
                 key={i}
-                className="flex justify-between items-center bg-neutral-900 px-3 py-2 rounded-lg"
+                className="bg-neutral-900 p-4 rounded-xl border border-neutral-700"
               >
-                <span>{s}</span>
-                <button
-                  onClick={() => deleteSubtema(i)}
-                  className="text-red-400 hover:text-red-300"
-                >
-                  ✕
-                </button>
+                <div className="flex justify-between mb-2">
+                  <h3 className="font-semibold">Subtema {i + 1}</h3>
+                  <button
+                    onClick={() => deleteSubtema(i)}
+                    className="text-red-400 hover:text-red-300"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Título del subtema"
+                  className="w-full mb-3 px-3 py-2 bg-neutral-800 rounded-lg"
+                  value={sub.titulo}
+                  onChange={(e) =>
+                    updateSubtema(i, "titulo", e.target.value)
+                  }
+                />
+
+                <textarea
+                  placeholder="Contenido del subtema"
+                  className="w-full px-3 py-2 bg-neutral-800 rounded-lg"
+                  rows={4}
+                  value={sub.contenido}
+                  onChange={(e) =>
+                    updateSubtema(i, "contenido", e.target.value)
+                  }
+                />
               </div>
             ))}
           </div>

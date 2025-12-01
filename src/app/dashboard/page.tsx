@@ -57,6 +57,13 @@ const sections: Section[] = [
     href: "/plan-aileen-admin",
     gradient: "from-pink-500 to-rose-600",
   },
+  {
+  title: "Mis Lecturas",
+  desc: "Devocionales y estudios bíblicos guardados.",
+  icon: "📖",
+  href: "/lecturas",
+  gradient: "from-yellow-500 to-amber-600",
+},
 ];
 
 export default function DashboardPage() {
