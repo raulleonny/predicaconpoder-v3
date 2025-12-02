@@ -19,43 +19,31 @@ export default function CrearSermonPage() {
   const [contenido, setContenido] = useState("");
 
   const [subtemas, setSubtemas] = useState<Subtema[]>([]);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ===============================================
-  // 🔥 AGREGAR SUBTEMA CON TÍTULO + TEXTO
-  // ===============================================
   const addSubtema = () => {
-    setSubtemas([
-      ...subtemas,
-      { titulo: "", contenido: "" } 
-    ]);
+    setSubtemas([...subtemas, { titulo: "", contenido: "" }]);
   };
 
-  // actualizar campos de cada subtema
   const updateSubtema = (index: number, field: "titulo" | "contenido", value: string) => {
     const updated = [...subtemas];
     updated[index][field] = value;
     setSubtemas(updated);
   };
 
-  // eliminar subtema
   const deleteSubtema = (index: number) => {
     setSubtemas(subtemas.filter((_, i) => i !== index));
   };
 
-  // ===============================================
-  // 📝 GUARDAR SERMON
-  // ===============================================
   const saveSermon = async () => {
     if (!titulo || !pasaje || !contenido) {
       setError("Debes completar todos los campos obligatorios");
       return;
     }
 
-    setLoading(true);
     setError("");
+    setLoading(true);
 
     try {
       const user = auth.currentUser;
@@ -64,19 +52,23 @@ export default function CrearSermonPage() {
         return;
       }
 
-      await addDoc(collection(db, "sermones"), {
+      // 🔥 GUARDAR CON ARCHIVADO: FALSE
+      const ref = await addDoc(collection(db, "sermones"), {
         uid: user.uid,
         titulo,
         pasaje,
         objetivo,
         contenido,
-        subtemas, // ahora guarda títulos y contenido completos
+        subtemas,
         creadoEn: Timestamp.now(),
+        archivado: false,
       });
 
-      router.push("/dashboard");
-    } catch {
-      setError("Error al guardar el sermón");
+      // 🔥 REDIRIGIR A LA VISTA DEL SERMON
+      router.push(`/mis-sermones/${ref.id}`);
+
+    } catch (e) {
+      setError("Error al guardar el sermón.");
     } finally {
       setLoading(false);
     }
@@ -87,8 +79,6 @@ export default function CrearSermonPage() {
       <h1 className="text-3xl font-bold mb-8">Crear Sermón</h1>
 
       <div className="max-w-2xl mx-auto space-y-6">
-
-        {/* TITULO */}
         <div>
           <label className="text-sm">Título del sermón</label>
           <input
@@ -99,7 +89,6 @@ export default function CrearSermonPage() {
           />
         </div>
 
-        {/* PASAJE */}
         <div>
           <label className="text-sm">Pasaje bíblico</label>
           <input
@@ -111,7 +100,6 @@ export default function CrearSermonPage() {
           />
         </div>
 
-        {/* OBJETIVO */}
         <div>
           <label className="text-sm">Objetivo del tema</label>
           <textarea
@@ -122,7 +110,6 @@ export default function CrearSermonPage() {
           />
         </div>
 
-        {/* CONTENIDO */}
         <div>
           <label className="text-sm">Contenido del sermón</label>
           <textarea
@@ -133,7 +120,6 @@ export default function CrearSermonPage() {
           />
         </div>
 
-        {/* SUBTEMAS */}
         <div>
           <label className="text-sm">Subtemas</label>
 
@@ -146,10 +132,7 @@ export default function CrearSermonPage() {
 
           <div className="mt-4 space-y-6">
             {subtemas.map((sub, i) => (
-              <div
-                key={i}
-                className="bg-neutral-900 p-4 rounded-xl border border-neutral-700"
-              >
+              <div key={i} className="bg-neutral-900 p-4 rounded-xl border border-neutral-700">
                 <div className="flex justify-between mb-2">
                   <h3 className="font-semibold">Subtema {i + 1}</h3>
                   <button
@@ -165,9 +148,7 @@ export default function CrearSermonPage() {
                   placeholder="Título del subtema"
                   className="w-full mb-3 px-3 py-2 bg-neutral-800 rounded-lg"
                   value={sub.titulo}
-                  onChange={(e) =>
-                    updateSubtema(i, "titulo", e.target.value)
-                  }
+                  onChange={(e) => updateSubtema(i, "titulo", e.target.value)}
                 />
 
                 <textarea
@@ -175,9 +156,7 @@ export default function CrearSermonPage() {
                   className="w-full px-3 py-2 bg-neutral-800 rounded-lg"
                   rows={4}
                   value={sub.contenido}
-                  onChange={(e) =>
-                    updateSubtema(i, "contenido", e.target.value)
-                  }
+                  onChange={(e) => updateSubtema(i, "contenido", e.target.value)}
                 />
               </div>
             ))}

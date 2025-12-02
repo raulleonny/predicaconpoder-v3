@@ -43,14 +43,7 @@ const sections: Section[] = [
     href: "/archivo",
     gradient: "from-purple-500 to-fuchsia-600",
   },
-   {
-    title: "Plan Aileen",
-    desc: "El plan de 30 días para tu hija",
-    icon: "🌸",
-    href: "/plan-aileen-admin",
-    gradient: "from-pink-500 to-rose-600",
-  },
-  {
+     {
     title: "Mis Lecturas",
     desc: "Devocionales y estudios bíblicos guardados.",
     icon: "📖",
@@ -72,6 +65,13 @@ const sections: Section[] = [
     icon: "⚙️",
     href: "/ajustes",
     gradient: "from-slate-600 to-slate-800",
+  },
+  {
+    title: "Plan Aileen",
+    desc: "El plan de 30 días para tu hija",
+    icon: "🌸",
+    href: "/plan-aileen-admin",
+    gradient: "from-pink-500 to-rose-600",
   },
 ];
 
