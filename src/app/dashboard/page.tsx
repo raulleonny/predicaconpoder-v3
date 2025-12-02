@@ -43,14 +43,7 @@ const sections: Section[] = [
     href: "/archivo",
     gradient: "from-purple-500 to-fuchsia-600",
   },
-  {
-    title: "Ajustes",
-    desc: "Configura tu cuenta y preferencias.",
-    icon: "⚙️",
-    href: "/ajustes",
-    gradient: "from-slate-600 to-slate-800",
-  },
-  {
+   {
     title: "Plan Aileen",
     desc: "El plan de 30 días para tu hija",
     icon: "🌸",
@@ -72,6 +65,13 @@ const sections: Section[] = [
     icon: "📜",
     href: "/biblia",
     gradient: "from-red-500 to-orange-600",
+  },
+   {
+    title: "Ajustes",
+    desc: "Configura tu cuenta y preferencias.",
+    icon: "⚙️",
+    href: "/ajustes",
+    gradient: "from-slate-600 to-slate-800",
   },
 ];
 
