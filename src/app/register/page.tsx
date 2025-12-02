@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👁️ NUEVO
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -20,7 +21,6 @@ export default function RegisterPage() {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const uid = res.user.uid;
 
-      // 🔥 Crear perfil vacío al registrarse
       await setDoc(doc(db, "usuarios", uid), {
         email,
         nombre: "",
@@ -28,7 +28,7 @@ export default function RegisterPage() {
         createdAt: Timestamp.now(),
       });
 
-      router.push("/perfil"); // ahora sí correcto
+      router.push("/perfil");
     } catch (error) {
       console.error(error);
       alert("Error registrando usuario.");
@@ -51,13 +51,24 @@ export default function RegisterPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <input
-            type="password"
-            placeholder="Contraseña"
-            className="w-full p-3 bg-neutral-800 rounded-lg mb-4"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          {/* 🔥 INPUT DE CONTRASEÑA CON OJO */}
+          <div className="relative mb-4">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Contraseña"
+              className="w-full p-3 bg-neutral-800 rounded-lg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+            >
+              {showPassword ? "🙈" : "👁️"}
+            </button>
+          </div>
 
           <button
             disabled={loading}
