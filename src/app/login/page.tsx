@@ -10,6 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // 👁️ NUEVO
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
@@ -35,12 +36,24 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <input
-          type="password"
-          placeholder="Contraseña"
-          className="w-full mb-4 px-3 py-2 bg-neutral-800 rounded-lg"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {/* 🔥 INPUT DE CONTRASEÑA CON OJO */}
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Contraseña"
+            className="w-full px-3 py-2 bg-neutral-800 rounded-lg"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          {/* BOTÓN DE OJO */}
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+          >
+            {showPassword ? "🙈" : "👁️"}
+          </button>
+        </div>
 
         <button
           onClick={handleLogin}
