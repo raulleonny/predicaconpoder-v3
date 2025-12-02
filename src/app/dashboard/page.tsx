@@ -58,19 +58,27 @@ const sections: Section[] = [
     gradient: "from-pink-500 to-rose-600",
   },
   {
-  title: "Mis Lecturas",
-  desc: "Devocionales y estudios bíblicos guardados.",
-  icon: "📖",
-  href: "/lecturas",
-  gradient: "from-yellow-500 to-amber-600",
-},
+    title: "Mis Lecturas",
+    desc: "Devocionales y estudios bíblicos guardados.",
+    icon: "📖",
+    href: "/lecturas",
+    gradient: "from-yellow-500 to-amber-600",
+  },
+
+  // ✅ NUEVA TARJETA: BIBLIA
+  {
+    title: "Biblia",
+    desc: "Lee la Biblia completa por libros y capítulos.",
+    icon: "📜",
+    href: "/biblia",
+    gradient: "from-red-500 to-orange-600",
+  },
 ];
 
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
-  // CORRECCIÓN IMPORTANTE → VALIDAR ADMINISTRADOR
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -80,7 +88,6 @@ export default function DashboardPage() {
 
       const adminEmail = "planaileen@gmail.com";
 
-      // si NO es el administrador → enviarlo al calendario
       if (user.email !== adminEmail) {
         router.push("/aileen");
         return;
@@ -105,11 +112,10 @@ export default function DashboardPage() {
     );
   }
 
-  // El ADMIN ve el dashboard completo:
   return (
     <main className="min-h-screen bg-neutral-950 text-white flex flex-col items-center px-4 py-10">
       <div className="w-full max-w-6xl">
-        {/* Encabezado */}
+
         <header className="mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <p className="text-sm text-neutral-400">Bienvenido a</p>
@@ -117,8 +123,7 @@ export default function DashboardPage() {
               Predica <span className="text-indigo-400">Con Poder</span>
             </h1>
             <p className="text-neutral-400 mt-2 max-w-xl text-sm sm:text-base">
-              Crea, organiza y guarda tus sermones, ideas y devocionales desde
-              cualquier dispositivo — optimizado para iPad.
+              Crea, organiza y guarda tus sermones, ideas y devocionales desde cualquier dispositivo — optimizado para iPad.
             </p>
           </div>
 
